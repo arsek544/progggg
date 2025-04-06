@@ -1,1 +1,117 @@
-{% extends 'base.html' %} {% block content %}<h2>Welcome to Staem</h2>{% endblock %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Staem — Магазин игр</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1b2838;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #171a21;
+            padding: 1em;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 1em;
+        }
+        .balance {
+            margin-bottom: 2em;
+            padding: 1em;
+            background: #2a475e;
+            border-radius: 10px;
+        }
+        .games {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1em;
+        }
+        .game {
+            background: #2a475e;
+            padding: 1em;
+            border-radius: 10px;
+            width: 30%;
+        }
+        .game img {
+            width: 100%;
+            border-radius: 5px;
+        }
+        .game h3 {
+            margin: 0.5em 0;
+        }
+        .buy-btn {
+            background: #66c0f4;
+            border: none;
+            padding: 0.5em 1em;
+            color: black;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .buy-btn:hover {
+            background: #8bcff4;
+        }
+        form {
+            display: flex;
+            gap: 1em;
+            margin-top: 1em;
+        }
+        input[type="number"] {
+            padding: 0.5em;
+            border-radius: 5px;
+            border: none;
+            width: 150px;
+        }
+        input[type="submit"] {
+            background: #66c0f4;
+            color: black;
+            border: none;
+            padding: 0.5em 1em;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background: #8bcff4;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Staem — Магазин игр
+    </header>
+    <div class="container">
+        <div class="balance">
+            <h2>Привет, {{ user.username }}!</h2>
+            <p>Ваш баланс: {{ user.balance }}₽</p>
+            <form method="POST" action="/top_up">
+                <input type="number" name="amount" min="1" placeholder="Введите сумму" required>
+                <input type="submit" value="Пополнить баланс">
+            </form>
+        </div>
+
+        <h2>Доступные игры:</h2>
+        <div class="games">
+            {% for game in games %}
+            <div class="game">
+                <img src="{{ url_for('static', filename='images/' + game.image) }}" alt="{{ game.title }}">
+                <h3>{{ game.title }}</h3>
+                <p>Цена: {{ game.price }}₽</p>
+                {% if game.id in owned_game_ids %}
+                    <p><em>Уже куплена</em></p>
+                {% else %}
+                    <form method="POST" action="/buy/{{ game.id }}">
+                        <input type="submit" value="Купить" class="buy-btn">
+                    </form>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
