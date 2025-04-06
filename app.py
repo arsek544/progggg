@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -78,6 +78,7 @@ def add_funds():
     user = User.query.get(session['user_id'])
     user.balance += amount
     db.session.commit()
+    flash(f'Баланс пополнен на {amount}₽!')
     return redirect(url_for('profile'))
 
 @app.route('/buy/<int:game_id>')
