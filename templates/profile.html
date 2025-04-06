@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Staem — Профиль</title>
+</head>
+<body>
+    <h1>Профиль: {{ user.username }}</h1>
+    <p>Баланс: ${{ "%.2f"|format(user.balance) }}</p>
+    <a href="{{ url_for('index') }}">На главную</a> |
+    <a href="{{ url_for('library') }}">Моя библиотека</a> |
+    <a href="{{ url_for('logout') }}">Выйти</a>
+</body>
+</html>
