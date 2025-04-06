@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -31,7 +31,10 @@ class Purchase(db.Model):
 @app.route('/')
 def index():
     games = Game.query.all()
-    return render_template('index.html', games=games)
+    user = None
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+    return render_template('index.html', games=games, user=user)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -54,7 +57,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
-            return redirect(url_for('profile'))
+            return redirect(url_for('index'))
         return 'Invalid credentials!'
     return render_template('login.html')
 
@@ -78,7 +81,6 @@ def add_funds():
     user = User.query.get(session['user_id'])
     user.balance += amount
     db.session.commit()
-    flash(f'Баланс пополнен на {amount}₽!')
     return redirect(url_for('profile'))
 
 @app.route('/buy/<int:game_id>')
